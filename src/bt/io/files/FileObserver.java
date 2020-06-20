@@ -17,16 +17,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import bt.io.files.evnt.FileCreateEvent;
+import bt.io.files.evnt.FileDeleteEvent;
+import bt.io.files.evnt.FileModifyEvent;
+import bt.io.files.evnt.FileObserverEvent;
+import bt.log.Logger;
 import bt.runtime.InstanceKiller;
-import bt.runtime.Killable;
 import bt.runtime.evnt.Dispatcher;
-import bt.types.files.evnt.FileCreateEvent;
-import bt.types.files.evnt.FileDeleteEvent;
-import bt.types.files.evnt.FileModifyEvent;
-import bt.types.files.evnt.FileObserverEvent;
-import bt.utils.log.Logger;
+import bt.scheduler.Threads;
+import bt.types.Killable;
+import bt.utils.exc.Exceptions;
 import bt.utils.nulls.Null;
-import bt.utils.thread.Threads;
+
 
 /**
  * A simple wrapper for a {@link WatchService} to allow listening to single files, subscribe to specific events specify
@@ -443,7 +445,7 @@ public class FileObserver implements Killable
     {
         Logger.global().print("Killing FileObserver.");
         this.observe = false;
-        Null.checkClose(this.watchService);
+        Exceptions.logThrow(() -> Null.checkClose(this.watchService));
     }
 
     /**

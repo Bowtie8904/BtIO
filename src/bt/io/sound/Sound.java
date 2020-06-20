@@ -4,7 +4,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineEvent;
 
-import bt.utils.log.Logger;
+import bt.log.Logger;
 import bt.utils.nulls.Null;
 import bt.utils.num.NumberUtils;
 

@@ -9,8 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import bt.utils.files.FileUtils;
-import bt.utils.log.Logger;
+import bt.log.Logger;
+import bt.utils.file.FileUtils;
 
 /**
  * A utility class to perform JSON operations.

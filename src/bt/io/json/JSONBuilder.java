@@ -4,11 +4,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import bt.utils.log.Logger;
+import bt.log.Logger;
 
 /**
  * A calss to simplyfy the process of building a JSON from multiple objects.
- * 
+ *
  * @author &#8904
  *
  */
@@ -23,7 +23,7 @@ public class JSONBuilder
 
     /**
      * returns the built JSON as a JSONObject.
-     * 
+     *
      * @return
      */
     public JSONObject toJSON()
@@ -33,7 +33,7 @@ public class JSONBuilder
 
     /**
      * returns the built JSON as a JSON String.
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -44,7 +44,7 @@ public class JSONBuilder
 
     /**
      * Puts the value with the name into the json.
-     * 
+     *
      * @param name
      * @param value
      * @return
@@ -73,7 +73,7 @@ public class JSONBuilder
 
     /**
      * Puts the value with the name into the json.
-     * 
+     *
      * @param name
      * @param value
      * @return
@@ -94,7 +94,7 @@ public class JSONBuilder
 
     /**
      * Puts the value with the name into the json.
-     * 
+     *
      * @param name
      * @param value
      * @return
@@ -115,7 +115,7 @@ public class JSONBuilder
 
     /**
      * Puts the value with the name into the json.
-     * 
+     *
      * @param name
      * @param value
      * @return
@@ -136,7 +136,7 @@ public class JSONBuilder
 
     /**
      * Puts the value with the name into the json.
-     * 
+     *
      * @param name
      * @param value
      * @return
@@ -157,7 +157,7 @@ public class JSONBuilder
 
     /**
      * Puts the value with the name into the json.
-     * 
+     *
      * @param name
      * @param value
      * @return
@@ -178,7 +178,7 @@ public class JSONBuilder
 
     /**
      * Puts the value with the name into the json.
-     * 
+     *
      * @param name
      * @param value
      * @return
@@ -199,7 +199,7 @@ public class JSONBuilder
 
     /**
      * Puts the value with the name into the json.
-     * 
+     *
      * @param name
      * @param value
      * @return
@@ -220,11 +220,11 @@ public class JSONBuilder
 
     /**
      * Puts an array of the values with the given name into the JSON.
-     * 
+     *
      * <p>
      * If the value classes implement Jsonable the toJSON() method will be called to format them correctly.
      * </p>
-     * 
+     *
      * @param name
      * @param values
      * @return
@@ -259,7 +259,7 @@ public class JSONBuilder
 
     /**
      * Puts an array of the values with the given name into the JSON.
-     * 
+     *
      * @param name
      * @param values
      * @return
@@ -287,7 +287,7 @@ public class JSONBuilder
 
     /**
      * Puts an array of the values with the given name into the JSON.
-     * 
+     *
      * @param name
      * @param values
      * @return
@@ -315,7 +315,7 @@ public class JSONBuilder
 
     /**
      * Puts an array of the values with the given name into the JSON.
-     * 
+     *
      * @param name
      * @param values
      * @return
@@ -343,7 +343,7 @@ public class JSONBuilder
 
     /**
      * Puts an array of the values with the given name into the JSON.
-     * 
+     *
      * @param name
      * @param values
      * @return
@@ -371,7 +371,7 @@ public class JSONBuilder
 
     /**
      * Puts an array of the values with the given name into the JSON.
-     * 
+     *
      * @param name
      * @param values
      * @return
@@ -406,7 +406,7 @@ public class JSONBuilder
 
     /**
      * Puts an array of the values with the given name into the JSON.
-     * 
+     *
      * @param name
      * @param values
      * @return
@@ -441,7 +441,7 @@ public class JSONBuilder
 
     /**
      * Puts an array of the values with the given name into the JSON.
-     * 
+     *
      * @param name
      * @param values
      * @return

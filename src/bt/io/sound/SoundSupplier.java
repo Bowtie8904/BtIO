@@ -12,11 +12,11 @@ import javax.sound.sampled.Line;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineUnavailableException;
 
-import bt.utils.log.Logger;
+import bt.log.Logger;
 
 /**
  * An audio data holder that supplies {@link Clips}s without having to reload any resources.
- * 
+ *
  * @author &#8904
  */
 public class SoundSupplier
@@ -28,7 +28,7 @@ public class SoundSupplier
 
     /**
      * Creates a new instance and loads the audio from the given file.
-     * 
+     *
      * @param file
      *            The sound file that should be used.
      */
@@ -54,7 +54,7 @@ public class SoundSupplier
 
     /**
      * Creates a new instance and loads the audio from the given file.
-     * 
+     *
      * @param stream
      *            The stream of the sound file that should be used.
      */
@@ -80,7 +80,7 @@ public class SoundSupplier
 
     /**
      * Gets a new {@link Sound} instance which will use this supplier.
-     * 
+     *
      * @return The new sound.
      */
     public Sound getSound()
@@ -90,11 +90,11 @@ public class SoundSupplier
 
     /**
      * Creates a new {@link Clip} from the contained audio data.
-     * 
+     *
      * <p>
      * The clip will be configured to automatically close its resources once its stopped.
      * </p>
-     * 
+     *
      * @return The clip.
      */
     public Clip getClip()

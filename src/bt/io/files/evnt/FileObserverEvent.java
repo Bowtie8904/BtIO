@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 
-import bt.types.files.FileObserver;
+import bt.io.files.FileObserver;
 
 /**
  * A {@link WatchEvent} implementation to be used with {@link FileChangeObserver}.
