@@ -84,4 +84,6 @@ public interface TextLoader extends Killable
      * @param group
      */
     public void load(String group);
+
+    public void clear();
 }

@@ -9,6 +9,7 @@ import bt.io.text.intf.TextLoader;
 import bt.io.text.obj.Text;
 import bt.io.text.obj.TextSource;
 import bt.log.Logger;
+import bt.utils.nulls.Null;
 
 /**
  * @author &#8904
@@ -102,7 +103,6 @@ public class BaseTextLoader implements TextLoader
     @Override
     public void load(String group)
     {
-        this.texts = new HashMap<>();
         List<String> loadedClasses = new ArrayList<>();
 
         for (TextSource textSource : this.textSources)
@@ -173,5 +173,14 @@ public class BaseTextLoader implements TextLoader
     public int getLoadMode()
     {
         return this.loadMode;
+    }
+
+    /**
+     * @see bt.io.text.intf.TextLoader#clear()
+     */
+    @Override
+    public void clear()
+    {
+        Null.checkRun(this.texts, () -> this.texts.clear());
     }
 }
