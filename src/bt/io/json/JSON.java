@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import bt.log.Logger;
-import bt.utils.file.FileUtils;
+import bt.utils.FileUtils;
 
 /**
  * A utility class to perform JSON operations.

@@ -5,8 +5,8 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineEvent;
 
 import bt.log.Logger;
-import bt.utils.nulls.Null;
-import bt.utils.num.NumberUtils;
+import bt.utils.Null;
+import bt.utils.NumberUtils;
 
 /**
  * A class wrapping a repeatable {@link Clip}.

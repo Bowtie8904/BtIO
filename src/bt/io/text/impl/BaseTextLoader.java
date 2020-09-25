@@ -9,7 +9,7 @@ import bt.io.text.intf.TextLoader;
 import bt.io.text.obj.Text;
 import bt.io.text.obj.TextSource;
 import bt.log.Logger;
-import bt.utils.nulls.Null;
+import bt.utils.Null;
 
 /**
  * @author &#8904

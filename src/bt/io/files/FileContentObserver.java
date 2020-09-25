@@ -19,7 +19,7 @@ import bt.io.files.evnt.FileObserverEvent;
 import bt.log.Logger;
 import bt.runtime.InstanceKiller;
 import bt.types.Killable;
-import bt.utils.nulls.Null;
+import bt.utils.Null;
 
 /**
  * An extension of {@link FileObserver} which offers additional functions to receive events for changes in file sizes
