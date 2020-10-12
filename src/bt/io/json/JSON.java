@@ -9,7 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import bt.log.Logger;
 import bt.utils.FileUtils;
 
 /**
@@ -42,7 +41,7 @@ public final class JSON
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return object;
     }
@@ -70,7 +69,7 @@ public final class JSON
         }
         catch (IOException e1)
         {
-            Logger.global().print(e1);
+            e1.printStackTrace();
         }
 
         try

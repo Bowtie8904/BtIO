@@ -16,7 +16,6 @@ import bt.io.files.evnt.FileCreateEvent;
 import bt.io.files.evnt.FileDeleteEvent;
 import bt.io.files.evnt.FileModifyEvent;
 import bt.io.files.evnt.FileObserverEvent;
-import bt.log.Logger;
 import bt.runtime.InstanceKiller;
 import bt.types.Killable;
 import bt.utils.Null;
@@ -232,7 +231,7 @@ public class FileContentObserver extends FileObserver
             }
             catch (IOException e1)
             {
-                Logger.global().print(e1);
+                e.printStackTrace();
             }
         }
 
@@ -273,7 +272,8 @@ public class FileContentObserver extends FileObserver
                 }
                 catch (IOException e2)
                 {
-                    Logger.global().print(e1);
+                    e1.printStackTrace();
+                    e2.printStackTrace();
                 }
             }
 

@@ -21,7 +21,6 @@ import bt.io.files.evnt.FileCreateEvent;
 import bt.io.files.evnt.FileDeleteEvent;
 import bt.io.files.evnt.FileModifyEvent;
 import bt.io.files.evnt.FileObserverEvent;
-import bt.log.Logger;
 import bt.runtime.InstanceKiller;
 import bt.runtime.evnt.Dispatcher;
 import bt.scheduler.Threads;
@@ -70,7 +69,7 @@ public class FileObserver implements Killable
         }
         catch (IOException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
 
         this.eventDispatcher = new Dispatcher();
@@ -443,7 +442,7 @@ public class FileObserver implements Killable
     @Override
     public void kill()
     {
-        Logger.global().print("Killing FileObserver.");
+        System.out.println("Killing FileObserver.");
         this.observe = false;
         Exceptions.logThrow(() -> Null.checkClose(this.watchService));
     }

@@ -12,7 +12,6 @@ import bt.io.json.JSON;
 import bt.io.text.exc.TextGroupNotFoundException;
 import bt.io.text.intf.TextLoader;
 import bt.io.text.obj.Text;
-import bt.log.Logger;
 
 /**
  * @author &#8904
@@ -56,7 +55,7 @@ public class JsonTextLoader extends BaseTextLoader
         }
         catch (Exception e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
 
         return JSON.parse(jsonString);
@@ -204,8 +203,8 @@ public class JsonTextLoader extends BaseTextLoader
             }
         }
 
-        Logger.global().printf("[%s] Loaded %d texts from language file.",
-                               group,
-                               count);
+        System.out.printf("[%s] Loaded %d texts from language file.",
+                          group,
+                          count);
     }
 }

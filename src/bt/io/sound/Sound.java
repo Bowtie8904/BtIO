@@ -4,7 +4,6 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineEvent;
 
-import bt.log.Logger;
 import bt.utils.Null;
 import bt.utils.NumberUtils;
 
@@ -204,7 +203,7 @@ public class Sound
             }
             catch (InterruptedException e1)
             {
-                Logger.global().print(e1);
+                e1.printStackTrace();
             }
         }
     }

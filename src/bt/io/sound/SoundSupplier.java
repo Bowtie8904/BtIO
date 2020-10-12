@@ -12,8 +12,6 @@ import javax.sound.sampled.Line;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineUnavailableException;
 
-import bt.log.Logger;
-
 /**
  * An audio data holder that supplies {@link Clips}s without having to reload any resources.
  *
@@ -48,7 +46,7 @@ public class SoundSupplier
         }
         catch (Exception e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
     }
 
@@ -74,7 +72,7 @@ public class SoundSupplier
         }
         catch (Exception e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
     }
 
@@ -118,7 +116,7 @@ public class SoundSupplier
         }
         catch (LineUnavailableException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
 
         return clip;

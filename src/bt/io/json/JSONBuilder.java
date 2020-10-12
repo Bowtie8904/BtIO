@@ -4,8 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import bt.log.Logger;
-
 /**
  * A calss to simplyfy the process of building a JSON from multiple objects.
  *
@@ -66,7 +64,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -87,7 +85,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -108,7 +106,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -129,7 +127,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -150,7 +148,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -171,7 +169,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -192,7 +190,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -213,7 +211,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -252,7 +250,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -280,7 +278,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -308,7 +306,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -336,7 +334,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -364,7 +362,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -388,7 +386,7 @@ public class JSONBuilder
             }
             catch (JSONException e)
             {
-                Logger.global().print(e);
+                e.printStackTrace();
             }
         }
 
@@ -399,7 +397,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -423,7 +421,7 @@ public class JSONBuilder
             }
             catch (JSONException e)
             {
-                Logger.global().print(e);
+                e.printStackTrace();
             }
         }
 
@@ -434,7 +432,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }
@@ -462,7 +460,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            Logger.global().print(e);
+            e.printStackTrace();
         }
         return this;
     }

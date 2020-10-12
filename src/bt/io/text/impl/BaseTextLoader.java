@@ -8,7 +8,6 @@ import java.util.Map;
 import bt.io.text.intf.TextLoader;
 import bt.io.text.obj.Text;
 import bt.io.text.obj.TextSource;
-import bt.log.Logger;
 import bt.utils.Null;
 
 /**
@@ -139,10 +138,10 @@ public class BaseTextLoader implements TextLoader
                 }
             }
 
-            Logger.global().printf("[%s] Loaded %d texts for %s.",
-                                   group,
-                                   count,
-                                   textSource.getClass().getName());
+            System.out.printf("[%s] Loaded %d texts for %s.",
+                              group,
+                              count,
+                              textSource.getClass().getName());
         }
     }
 
@@ -152,7 +151,7 @@ public class BaseTextLoader implements TextLoader
     @Override
     public void kill()
     {
-        Logger.global().print("Clearing texts.");
+        System.out.println("Clearing texts.");
         this.textSources.clear();
         this.texts.clear();
     }
