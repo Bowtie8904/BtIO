@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -18,8 +19,41 @@ import bt.utils.FileUtils;
  */
 public final class JSON
 {
+    private static JSONObject buildObject(JSONTokener tokener)
+    {
+        JSONObject object = null;
+
+        try
+        {
+            if (tokener.nextClean() != '{')
+            {
+                // json might start with an array, so we have to wrap it in a new jsonobject
+                tokener.back();
+                var array = new JSONArray(tokener);
+                object = new JSONObject();
+                object.put("array", array);
+            }
+            else
+            {
+                tokener.back();
+                object = new JSONObject(tokener);
+            }
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+
+        return object;
+    }
+
     /**
      * Parses the given JSON String to a valid JSONObject.
+     *
+     * <p>
+     *     Should the given json start with an array instead of a normal json object, the array will be
+     *     wrapped in a json object with the key "array".
+     * </p>
      *
      * @param json
      *            The json String to parse.
@@ -33,21 +67,18 @@ public final class JSON
         }
 
         JSONTokener tokener = new JSONTokener(json);
-        JSONObject object = null;
+        JSONObject object = buildObject(tokener);
 
-        try
-        {
-            object = new JSONObject(tokener);
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
         return object;
     }
 
     /**
      * Parses the given JSON InpuitStream to a valid JSONObject.
+     *
+     * <p>
+     *     Should the given json start with an array instead of a normal json object, the array will be
+     *     wrapped in a json object with the key "array".
+     * </p>
      *
      * @param json
      *            The json InputStream to parse.
@@ -72,14 +103,8 @@ public final class JSON
             e1.printStackTrace();
         }
 
-        try
-        {
-            object = new JSONObject(tokener);
-        }
-        catch (JSONException e)
-        {
-            return null;
-        }
+        object = buildObject(tokener);
+
         return object;
     }
 

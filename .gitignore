@@ -28,3 +28,5 @@ hs_err_pid*
 *.prefs
 src/test/Test.java
 /src/test/
+/.idea/
+*iml
