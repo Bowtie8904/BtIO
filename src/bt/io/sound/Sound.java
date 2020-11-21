@@ -213,7 +213,7 @@ public class Sound
      */
     public void stop()
     {
-        Null.checkRun(this.clip, this.clip::stop);
+        Null.checkRun(this.clip, () -> this.clip.stop());
     }
 
     /**
