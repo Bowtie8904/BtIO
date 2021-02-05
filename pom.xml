@@ -41,7 +41,7 @@
 	<dependency>
             <groupId>com.github.Bowtie8904</groupId>
             <artifactId>BtCommons</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>11ead9cbc6</version>
         </dependency>
 		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
 		<dependency>
