@@ -71,7 +71,7 @@ public class JsonTextLoader extends BaseTextLoader
         "texts":
         [
             {
-                "id":123,
+                "key":"Buttons.Play",
                 "languages":
                 [
                     {
@@ -86,7 +86,7 @@ public class JsonTextLoader extends BaseTextLoader
                 ]
             },
             {
-                "id":157,
+                "key":"Buttons.Exit",
                 "languages":
                 [
                     {
@@ -132,9 +132,9 @@ public class JsonTextLoader extends BaseTextLoader
             jsonLanguageObj = null;
             jsonTextObj = jsonTextArray.getJSONObject(i);
 
-            if (jsonTextObj.has("id"))
+            if (jsonTextObj.has("key"))
             {
-                int id = jsonTextObj.getInt("id");
+                String key = jsonTextObj.getString("key");
 
                 if (this.loadMode == TextLoader.LAZY_LOADING)
                 {
@@ -160,10 +160,10 @@ public class JsonTextLoader extends BaseTextLoader
 
                     if (text == null)
                     {
-                        text = "* " + id + " *";
+                        text = "* " + key + " *";
                     }
 
-                    textObj = new Text(id, text);
+                    textObj = new Text(key, text);
                     textObj.setLanguage(language == null ? "EN" : language);
                     add(textObj);
                     count ++ ;
@@ -190,10 +190,10 @@ public class JsonTextLoader extends BaseTextLoader
 
                             if (text == null)
                             {
-                                text = "* " + id + " *";
+                                text = "* " + key + " *";
                             }
 
-                            textObj = new Text(id, text);
+                            textObj = new Text(key, text);
                             textObj.setLanguage(language == null ? "EN" : language);
                             add(textObj);
                             count ++ ;

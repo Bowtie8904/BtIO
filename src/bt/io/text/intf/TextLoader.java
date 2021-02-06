@@ -53,16 +53,16 @@ public interface TextLoader extends Killable
     public int getLoadMode();
 
     /**
-     * Gets the version of the text with the given ID for the currently set language.
+     * Gets the version of the text with the given key for the currently set language.
      *
      * <p>
-     * If no text could be found a new text will be created consisting of '* ID *'.
+     * If no text could be found a new text will be created consisting of '* key *'.
      * </p>
      *
-     * @param id
+     * @param key
      * @return
      */
-    public Text get(int id);
+    public Text get(String key);
 
     /**
      * Adds the given text to the loader. The text must be fully configured with id and language.

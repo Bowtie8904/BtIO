@@ -18,7 +18,7 @@ public class BaseTextLoader implements TextLoader
 {
     protected int loadMode;
     protected String language = "EN";
-    protected Map<String, Map<Integer, Text>> texts;
+    protected Map<String, Map<String, Text>> texts;
     protected List<TextSource> textSources;
 
     public BaseTextLoader()
@@ -50,7 +50,7 @@ public class BaseTextLoader implements TextLoader
      * @see bt.game.resource.load.intf.TextLoader#get(int)
      */
     @Override
-    public Text get(int id)
+    public Text get(String key)
     {
         var textsForLanguage = this.texts.get(this.language);
 
@@ -58,12 +58,12 @@ public class BaseTextLoader implements TextLoader
 
         if (textsForLanguage != null)
         {
-            text = textsForLanguage.get(id);
+            text = textsForLanguage.get(key.toUpperCase());
         }
 
         if (text == null)
         {
-            text = new Text(id, "* " + id + " *", this.language);
+            text = new Text(key, "* " + key + " *", this.language);
             add(text);
         }
 
@@ -84,7 +84,7 @@ public class BaseTextLoader implements TextLoader
             this.texts.put(text.getLanguage(), textsForLanguage);
         }
 
-        this.texts.get(text.getLanguage()).put(text.getID(), text);
+        this.texts.get(text.getLanguage()).put(text.getKey(), text);
     }
 
     /**

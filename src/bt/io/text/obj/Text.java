@@ -8,35 +8,35 @@ public class Text
 {
     private String text;
     private String language;
-    private int id;
+    private String key;
 
     /**
-     * @return the id
+     * @return the key
      */
-    public int getID()
+    public String getKey()
     {
-        return this.id;
+        return this.key;
     }
 
     /**
-     * @param id
+     * @param key
      *            the id to set
      */
-    public void setID(int id)
+    public void setKey(String key)
     {
-        this.id = id;
+        this.key = key.toUpperCase();
     }
 
-    public Text(int id, String text)
+    public Text(String key, String text)
     {
-        this.id = id;
+        this.key = key.toUpperCase();
         this.text = text;
         this.language = "EN";
     }
 
-    public Text(int id, String text, String language)
+    public Text(String key, String text, String language)
     {
-        this(id, text);
+        this(key, text);
         setLanguage(language);
     }
 
