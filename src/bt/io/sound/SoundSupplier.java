@@ -1,16 +1,11 @@
 package bt.io.sound;
 
+import bt.utils.Exceptions;
+
 import java.io.File;
 import java.io.InputStream;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.Line;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.*;
 
 /**
  * An audio data holder that supplies {@link Clips}s without having to reload any resources.
@@ -32,17 +27,9 @@ public class SoundSupplier
      */
     public SoundSupplier(File file)
     {
-        try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file))
+        try
         {
-            this.af = audioInputStream.getFormat();
-            this.size = (int)(this.af.getFrameSize() * audioInputStream.getFrameLength());
-            this.audio = new byte[this.size];
-            this.info = new DataLine.Info(Clip.class,
-                                          this.af,
-                                          this.size);
-            audioInputStream.read(this.audio,
-                                  0,
-                                  this.size);
+            setSoundData(AudioSystem.getAudioInputStream(file));
         }
         catch (Exception e)
         {
@@ -58,7 +45,24 @@ public class SoundSupplier
      */
     public SoundSupplier(InputStream stream)
     {
-        try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(stream))
+        try
+        {
+            setSoundData(AudioSystem.getAudioInputStream(stream));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public SoundSupplier(AudioInputStream audioInputStream)
+    {
+        setSoundData(audioInputStream);
+    }
+
+    private void setSoundData(AudioInputStream audioInputStream)
+    {
+        try
         {
             this.af = audioInputStream.getFormat();
             this.size = (int)(this.af.getFrameSize() * audioInputStream.getFrameLength());
@@ -73,6 +77,10 @@ public class SoundSupplier
         catch (Exception e)
         {
             e.printStackTrace();
+        }
+        finally
+        {
+            Exceptions.uncheck(() -> audioInputStream.close());
         }
     }
 
