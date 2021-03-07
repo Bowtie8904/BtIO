@@ -10,8 +10,8 @@ import bt.utils.Exceptions;
 import bt.utils.Null;
 import bt.utils.NumberUtils;
 
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * A class wrapping a repeatable {@link Clip}.
@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Sound
 {
+    private static List<Sound> sounds = new CopyOnWriteArrayList<>();
     private static float masterVolume = 1;
     private SoundSupplier supplier;
     private Clip clip;
@@ -34,10 +35,14 @@ public class Sound
      */
     public static void setMasterVolume(float volume)
     {
-        volume = NumberUtils.clamp(volume,
-                                   0,
-                                   1);
+        volume = NumberUtils.clamp(volume, 0, 1);
         masterVolume = volume;
+
+        for (Sound sound : sounds)
+        {
+            // update volume to consider new master volume
+            sound.setVolume(sound.getVolume());
+        }
     }
 
     /**
@@ -110,6 +115,7 @@ public class Sound
         stop();
         this.clip = this.supplier.getClip();
         setVolume(this.volume);
+        sounds.add(this);
     }
 
     /**
@@ -118,6 +124,15 @@ public class Sound
     public void start()
     {
         setupClip();
+
+        this.clip.addLineListener((e) ->
+                                  {
+                                      if (e.getType().equals(LineEvent.Type.STOP))
+                                      {
+                                          sounds.remove(this);
+                                      }
+                                  });
+
         this.clip.start();
     }
 
@@ -139,6 +154,7 @@ public class Sound
             {
                 synchronized (lock)
                 {
+                    sounds.remove(this);
                     lock.notifyAll();
                 }
             }
@@ -189,6 +205,7 @@ public class Sound
             {
                 synchronized (lock)
                 {
+                    sounds.remove(this);
                     lock.notifyAll();
                 }
             }
@@ -210,9 +227,15 @@ public class Sound
      */
     public void stop()
     {
+        sounds.remove(this);
         Null.checkRun(this.clip, () -> this.clip.stop());
     }
 
+    /**
+     * Fades the sound out over the given span of milliseconds.
+     *
+     * @param fadeTime
+     */
     public void fadeOut(long fadeTime)
     {
         fadeOut(fadeTime, false);
@@ -238,9 +261,10 @@ public class Sound
                 Exceptions.uncheck(Thread::sleep, fadeIntervall);
             }
 
+            stop();
+
             if (wait)
             {
-                stop();
                 synchronized (lock)
                 {
                     lock.notifyAll();
