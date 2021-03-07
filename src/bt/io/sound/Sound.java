@@ -4,8 +4,13 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineEvent;
 
+import bt.scheduler.Threads;
+import bt.types.number.MutableInt;
+import bt.utils.Exceptions;
 import bt.utils.Null;
 import bt.utils.NumberUtils;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * A class wrapping a repeatable {@link Clip}.
@@ -142,12 +147,7 @@ public class Sound
 
         synchronized (lock)
         {
-            try
-            {
-                lock.wait();
-            }
-            catch (InterruptedException e1)
-            {}
+            Exceptions.uncheck(() -> lock.wait());
         }
     }
 
@@ -197,13 +197,9 @@ public class Sound
 
         synchronized (lock)
         {
-            try
+            synchronized (lock)
             {
-                lock.wait();
-            }
-            catch (InterruptedException e1)
-            {
-                e1.printStackTrace();
+                Exceptions.uncheck(() -> lock.wait());
             }
         }
     }
@@ -214,6 +210,55 @@ public class Sound
     public void stop()
     {
         Null.checkRun(this.clip, () -> this.clip.stop());
+    }
+
+    public void fadeOut(long fadeTime)
+    {
+        fadeOut(fadeTime, false);
+    }
+
+    public void fadeOutAndWait(long fadeTime)
+    {
+        fadeOut(fadeTime, true);
+    }
+
+    private void fadeOut(long fadeTime, boolean wait)
+    {
+        Object lock = new Object();
+        int fadeTicks = 10;
+        long fadeIntervall = fadeTime  / fadeTicks;
+        MutableInt count = new MutableInt(0);
+        float fadeOutVolume = this.volume / fadeTicks;
+
+        Threads.get().scheduleAtFixedRateDaemon(() -> {
+                                                    count.add(1);
+
+                                                    setVolume(this.volume - fadeOutVolume);
+
+                                                    if (count.get() >= fadeTicks)
+                                                    {
+                                                        if (wait)
+                                                        {
+                                                            synchronized (lock)
+                                                            {
+                                                                lock.notifyAll();
+                                                            }
+                                                        }
+
+                                                        Thread.currentThread().interrupt();
+                                                    }
+                                                },
+                                                fadeIntervall,
+                                                fadeIntervall,
+                                                TimeUnit.MILLISECONDS);
+
+        if (wait)
+        {
+            synchronized (lock)
+            {
+                Exceptions.uncheck(() -> lock.wait());
+            }
+        }
     }
 
     /**
