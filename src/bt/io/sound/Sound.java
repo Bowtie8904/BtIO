@@ -10,6 +10,7 @@ import bt.utils.Exceptions;
 import bt.utils.Null;
 import bt.utils.NumberUtils;
 
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -230,27 +231,22 @@ public class Sound
         MutableInt count = new MutableInt(0);
         float fadeOutVolume = this.volume / fadeTicks;
 
-        Threads.get().scheduleAtFixedRateDaemon(() -> {
-                                                    count.add(1);
+        Threads.get().executeCachedDaemon(() -> {
+            for (int i = 0; i < fadeTicks; i++)
+            {
+                setVolume(this.volume - fadeOutVolume);
+                Exceptions.uncheck(Thread::sleep, fadeIntervall);
+            }
 
-                                                    setVolume(this.volume - fadeOutVolume);
-
-                                                    if (count.get() >= fadeTicks)
-                                                    {
-                                                        if (wait)
-                                                        {
-                                                            synchronized (lock)
-                                                            {
-                                                                lock.notifyAll();
-                                                            }
-                                                        }
-
-                                                        Thread.currentThread().interrupt();
-                                                    }
-                                                },
-                                                fadeIntervall,
-                                                fadeIntervall,
-                                                TimeUnit.MILLISECONDS);
+            if (wait)
+            {
+                stop();
+                synchronized (lock)
+                {
+                    lock.notifyAll();
+                }
+            }
+        });
 
         if (wait)
         {
