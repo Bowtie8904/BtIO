@@ -18,6 +18,7 @@ public class SoundSupplier
     private int size;
     private byte[] audio;
     private DataLine.Info info;
+    private float volume;
 
     /**
      * Creates a new instance and loads the audio from the given file.
@@ -60,6 +61,21 @@ public class SoundSupplier
         setSoundData(audioInputStream);
     }
 
+    public float getVolume()
+    {
+        return volume;
+    }
+
+    /**
+     * Sets the volume that will be given to every created sound instance.
+     *
+     * @param volume
+     */
+    public void setVolume(float volume)
+    {
+        this.volume = volume;
+    }
+
     private void setSoundData(AudioInputStream audioInputStream)
     {
         try
@@ -91,7 +107,9 @@ public class SoundSupplier
      */
     public Sound getSound()
     {
-        return new Sound(this);
+        Sound sound = new Sound(this);
+        sound.setVolume(this.volume);
+        return sound;
     }
 
     /**
