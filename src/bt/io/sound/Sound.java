@@ -1,58 +1,54 @@
 package bt.io.sound;
 
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.LineEvent;
 
 import bt.scheduler.Threads;
 import bt.types.number.MutableInt;
 import bt.utils.Exceptions;
-import bt.utils.Null;
 import bt.utils.NumberUtils;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A class wrapping a repeatable {@link Clip}.
- *
  * @author &#8904
  */
-public class Sound
+public class Sound implements LineStopListener
 {
-    private static List<Sound> sounds = new CopyOnWriteArrayList<>();
-    private static float masterVolume = 1;
+    public static final String MASTER_VOLUME = "master";
+    protected static Map<String, VolumeCategory> volumeCategories = new ConcurrentHashMap<>();
     private SoundSupplier supplier;
-    private Clip clip;
     private float volume = 1;
+    private int instanceHandle = -1;
+    private boolean running = false;
+    private Object lock = new Object();
 
-    /**
-     * Sets the master volume for all sounds.
-     *
-     * @param volume
-     *            A volume value between 0 (no volume) and 1 (highest volume). Values that are below 0 or above 1 will
-     *            be clamped to their clostest bound, i. e. -5 becomes 0 and 14 becomes 1.
-     */
-    public static void setMasterVolume(float volume)
+    public static synchronized void createVolumeCategoryIfNotExist(String name)
     {
-        volume = NumberUtils.clamp(volume, 0, 1);
-        masterVolume = volume;
+        name = name.toLowerCase();
+        var found = volumeCategories.get(name);
 
-        for (Sound sound : sounds)
+        if (found == null)
         {
-            // update volume to consider new master volume
-            sound.setVolume(sound.getVolume());
+            VolumeCategory category = new VolumeCategory(name);
+            volumeCategories.put(name, category);
         }
     }
 
-    /**
-     * Gets the currently set master volume for all sounds.
-     *
-     * @return A volume value between 0 (no volume) and 1 (highest volume).
-     */
-    public static float getMasterVolume()
+    public static void setMasterVolume(float volume)
     {
-        return masterVolume;
+        setVolume(Sound.MASTER_VOLUME, volume);
+    }
+
+    public static void setVolume(String categoryName, float volume)
+    {
+        categoryName= categoryName.toLowerCase();
+        var category = volumeCategories.get(categoryName);
+
+        if (category != null)
+        {
+            category.applyVolume(volume);
+        }
     }
 
     /**
@@ -79,17 +75,21 @@ public class Sound
      */
     public void setVolume(float volume)
     {
-        volume = NumberUtils.clamp(volume,
-                                   0,
-                                   1);
-        this.volume = volume * masterVolume;
+        volume = NumberUtils.clamp(volume, 0, 1);
+        this.volume = volume;
 
-        if (this.clip != null)
+        float actualVolume = volume;
+
+        if (this.supplier.getVolumeCategory() != null)
         {
-            FloatControl masterGain = (FloatControl)this.clip.getControl(FloatControl.Type.MASTER_GAIN);
-            float range = masterGain.getMaximum() - masterGain.getMinimum();
-            float gain = (range * volume) + masterGain.getMinimum();
-            masterGain.setValue(gain);
+            actualVolume *= Sound.volumeCategories.get(this.supplier.getVolumeCategory()).getVolume();
+        }
+
+        actualVolume *= Sound.volumeCategories.get(Sound.MASTER_VOLUME).getVolume();
+
+        if (this.instanceHandle != -1)
+        {
+            this.supplier.getAudioCue().setVolume(this.instanceHandle, actualVolume);
         }
     }
 
@@ -113,9 +113,9 @@ public class Sound
     private void setupClip()
     {
         stop();
-        this.clip = this.supplier.getClip();
+
+        this.instanceHandle = this.supplier.getAudioCue().obtainInstance();
         setVolume(this.volume);
-        sounds.add(this);
     }
 
     /**
@@ -125,15 +125,9 @@ public class Sound
     {
         setupClip();
 
-        this.clip.addLineListener((e) ->
-                                  {
-                                      if (e.getType().equals(LineEvent.Type.STOP))
-                                      {
-                                          sounds.remove(this);
-                                      }
-                                  });
-
-        this.clip.start();
+        this.supplier.getAudioCue().addAudioCueListener(this);
+        this.supplier.getAudioCue().start(this.instanceHandle);
+        this.running = true;
     }
 
     /**
@@ -145,22 +139,11 @@ public class Sound
      */
     public void startAndWait()
     {
-        Object lock = new Object();
         setupClip();
 
-        this.clip.addLineListener((e) ->
-        {
-            if (e.getType().equals(LineEvent.Type.STOP))
-            {
-                synchronized (lock)
-                {
-                    sounds.remove(this);
-                    lock.notifyAll();
-                }
-            }
-        });
-
-        this.clip.start();
+        this.supplier.getAudioCue().addAudioCueListener(this);
+        this.supplier.getAudioCue().start(this.instanceHandle);
+        this.running = true;
 
         synchronized (lock)
         {
@@ -184,7 +167,11 @@ public class Sound
     public void loop(int count)
     {
         setupClip();
-        this.clip.loop(count);
+
+        this.supplier.getAudioCue().addAudioCueListener(this);
+        this.supplier.getAudioCue().setLooping(this.instanceHandle, count);
+        this.supplier.getAudioCue().start(this.instanceHandle);
+        this.running = true;
     }
 
     /**
@@ -196,29 +183,16 @@ public class Sound
      */
     public void loopAndWait(int count)
     {
-        Object lock = new Object();
         setupClip();
 
-        this.clip.addLineListener((e) ->
-        {
-            if (e.getType().equals(LineEvent.Type.STOP))
-            {
-                synchronized (lock)
-                {
-                    sounds.remove(this);
-                    lock.notifyAll();
-                }
-            }
-        });
+        this.supplier.getAudioCue().addAudioCueListener(this);
+        this.supplier.getAudioCue().setLooping(this.instanceHandle, count);
+        this.supplier.getAudioCue().start(this.instanceHandle);
+        this.running = true;
 
-        this.clip.loop(count);
-
-        synchronized (lock)
+        synchronized (this.lock)
         {
-            synchronized (lock)
-            {
-                Exceptions.uncheck(() -> lock.wait());
-            }
+            Exceptions.uncheck(() -> this.lock.wait());
         }
     }
 
@@ -227,8 +201,10 @@ public class Sound
      */
     public void stop()
     {
-        sounds.remove(this);
-        Null.checkRun(this.clip, () -> this.clip.stop());
+        if (this.instanceHandle != -1)
+        {
+            this.supplier.getAudioCue().stop(this.instanceHandle);
+        }
     }
 
     /**
@@ -281,13 +257,28 @@ public class Sound
         }
     }
 
-    /**
-     * Indicates whether this sound is currently playing.
-     *
-     * @return True if this sound is currently playing.
-     */
-    public boolean isRunning()
+    @Override
+    public void onStop(int instanceHandle)
     {
-        return this.clip != null && this.clip.isRunning();
+        if (this.instanceHandle == instanceHandle)
+        {
+            synchronized (this.lock)
+            {
+                this.lock.notifyAll();
+            }
+
+            Sound.volumeCategories.get(Sound.MASTER_VOLUME).removeSound(this);
+
+            if (this.supplier.getVolumeCategory() != null)
+            {
+                Sound.volumeCategories.get(this.supplier.getVolumeCategory()).removeSound(this);
+            }
+
+            this.supplier.getAudioCue().releaseInstance(this.instanceHandle);
+            this.supplier.getAudioCue().removeAudioCueListener(this);
+
+            this.instanceHandle = -1;
+            this.running = false;
+        }
     }
 }
