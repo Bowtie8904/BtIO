@@ -5,6 +5,7 @@ import bt.types.Killable;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.sound.sampled.*;
 
@@ -22,11 +23,26 @@ public class SoundSupplier implements Killable
      *
      * @param file
      *            The sound file that should be used.
+     * @param concurrentPlays
+     *             The number of sounds from this supplier that can be played concurrently.
      */
     public SoundSupplier(File file, int concurrentPlays) throws IOException, UnsupportedAudioFileException, LineUnavailableException
     {
+        this(file.toURI().toURL(), concurrentPlays);
+    }
+
+    /**
+     * Creates a new instance and loads the audio from the given URL.
+     *
+     * @param url
+     *            The sound url that should be used.
+     * @param concurrentPlays
+     *            The number of sounds from this supplier that can be played concurrently.
+     */
+    public SoundSupplier(URL url, int concurrentPlays) throws IOException, UnsupportedAudioFileException, LineUnavailableException
+    {
         Sound.createVolumeCategoryIfNotExist(Sound.MASTER_VOLUME);
-        this.audioCue = AudioCue.makeStereoCue(file.toURI().toURL(), concurrentPlays);
+        this.audioCue = AudioCue.makeStereoCue(url, concurrentPlays);
         this.audioCue.open();
     }
 
