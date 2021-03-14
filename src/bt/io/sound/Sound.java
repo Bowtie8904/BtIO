@@ -43,12 +43,9 @@ public class Sound implements LineStopListener
     public static void setVolume(String categoryName, float volume)
     {
         categoryName= categoryName.toLowerCase();
+        createVolumeCategoryIfNotExist(categoryName);
         var category = volumeCategories.get(categoryName);
-
-        if (category != null)
-        {
-            category.applyVolume(volume);
-        }
+        category.applyVolume(volume);
     }
 
     /**
