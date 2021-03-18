@@ -35,11 +35,26 @@ public class Sound implements LineStopListener
         }
     }
 
+    /**
+     * Sets the volume of the master volume category.
+     *
+     * This is a convinience method for the call for {@link #setVolume(String, float) setVolume} for the {@link Sound.MASTER_VOLUME} category.
+     *
+     * @param volume
+     */
     public static void setMasterVolume(float volume)
     {
         setVolume(Sound.MASTER_VOLUME, volume);
     }
 
+    /**
+     * Sets the volume of the given volume category.
+     *
+     * If the given categoryName does not map to an existing category then it will be created.
+     *
+     * @param categoryName
+     * @param volume
+     */
     public static void setVolume(String categoryName, float volume)
     {
         categoryName= categoryName.toLowerCase();

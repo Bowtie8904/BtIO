@@ -2,6 +2,7 @@ package bt.io.sound;
 
 import bt.io.sound.philfrei.audiocue.AudioCue;
 import bt.types.Killable;
+import bt.utils.StringID;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +47,36 @@ public class SoundSupplier implements Killable
         this.audioCue.open();
     }
 
+    /**
+     * Creates a new instance and loads the audio from the given stream.
+     *
+     * @param ais
+     *            The sound stream that should be used.
+     * @param concurrentPlays
+     *            The number of sounds from this supplier that can be played concurrently.
+     */
+    public SoundSupplier(AudioInputStream ais, int concurrentPlays) throws IOException, UnsupportedAudioFileException, LineUnavailableException
+    {
+        this(ais, StringID.uniqueID(), concurrentPlays);
+    }
+
+    /**
+     * Creates a new instance and loads the audio from the given stream.
+     *
+     * @param ais
+     *            The sound stream that should be used.
+     * @param name
+     *            The name that will be used for the underlying AduiCue instance.
+     * @param concurrentPlays
+     *            The number of sounds from this supplier that can be played concurrently.
+     */
+    public SoundSupplier(AudioInputStream ais, String name, int concurrentPlays) throws IOException, UnsupportedAudioFileException, LineUnavailableException
+    {
+        Sound.createVolumeCategoryIfNotExist(Sound.MASTER_VOLUME);
+        this.audioCue = AudioCue.makeStereoCue(ais, StringID.uniqueID(), concurrentPlays);
+        this.audioCue.open();
+    }
+
     public void setName(String name)
     {
         this.audioCue.setName(name);
@@ -61,6 +92,14 @@ public class SoundSupplier implements Killable
         return volume;
     }
 
+    /**
+     * Sets the volume category of this sound.
+     *
+     * Each sound will be affected by the master volume category by default. A category set via this
+     * method will be taken into account additionally.
+     *
+     * @param volumeCategory
+     */
     public void setVolumeCategory(String volumeCategory)
     {
         this.volumeCategory = volumeCategory.toLowerCase();

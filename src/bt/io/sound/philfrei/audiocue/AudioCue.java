@@ -319,6 +319,14 @@ public class AudioCue implements AudioMixerTrack
         return new AudioCue(cue, name, polyphony);
     }
 
+    public static AudioCue makeStereoCue(AudioInputStream ais, String name, int polyphony)
+            throws UnsupportedAudioFileException, IOException
+    {
+        float[] cue = AudioCue.loadAudio(ais);
+
+        return new AudioCue(cue, name, polyphony);
+    }
+
     /**
      * Private constructor, used internally.
      *
@@ -353,12 +361,9 @@ public class AudioCue implements AudioMixerTrack
         listeners = new CopyOnWriteArrayList<AudioCueListener>();
     }
 
-    // Currently assumes stereo format ("CD Quality")
-    private static float[] loadURL(URL url) throws
+    private static float[] loadAudio(AudioInputStream ais) throws
                                             UnsupportedAudioFileException, IOException
     {
-        AudioInputStream ais = AudioSystem.getAudioInputStream(url);
-
         int framesCount = 0;
         if (ais.getFrameLength() > Integer.MAX_VALUE >> 1)
         {
@@ -399,6 +404,14 @@ public class AudioCue implements AudioMixerTrack
         }
 
         return temp;
+    }
+
+    // Currently assumes stereo format ("CD Quality")
+    private static float[] loadURL(URL url) throws
+                                            UnsupportedAudioFileException, IOException
+    {
+        AudioInputStream ais = AudioSystem.getAudioInputStream(url);
+        return loadAudio(ais);
     }
 
     /**
