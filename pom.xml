@@ -85,5 +85,16 @@
 			<artifactId>json</artifactId>
 			<version>20180130</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.twelvemonkeys.imageio</groupId>
+			<artifactId>imageio-jpeg</artifactId>
+			<version>3.6.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twelvemonkeys.imageio</groupId>
+			<artifactId>imageio-tiff</artifactId>
+			<version>3.6.4</version>
+		</dependency>
 	</dependencies>
 </project>
