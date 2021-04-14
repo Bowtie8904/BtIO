@@ -386,7 +386,7 @@ public class Sound implements LineStopListener
     {
         this.isPaused = true;
 
-        if (this.running)
+        if (this.running && this.instanceHandle != -1)
         {
             this.supplier.getAudioCue().stop(this.instanceHandle);
             this.running = false;
@@ -397,7 +397,7 @@ public class Sound implements LineStopListener
     {
         this.isPaused = false;
 
-        if (!this.running)
+        if (!this.running && this.instanceHandle != -1)
         {
             this.supplier.getAudioCue().start(this.instanceHandle);
             this.running = true;
