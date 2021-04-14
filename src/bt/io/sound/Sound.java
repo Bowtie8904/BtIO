@@ -3,7 +3,6 @@ package bt.io.sound;
 import javax.sound.sampled.Clip;
 
 import bt.scheduler.Threads;
-import bt.types.number.MutableInt;
 import bt.utils.Exceptions;
 import bt.utils.NumberUtils;
 
@@ -15,23 +14,44 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Sound implements LineStopListener
 {
-    public static final String MASTER_VOLUME = "master";
-    protected static Map<String, VolumeCategory> volumeCategories = new ConcurrentHashMap<>();
+    public static final String MASTER_CATEGORY = "master";
+    protected static Map<String, SoundCategory> soundCategories = new ConcurrentHashMap<>();
     private SoundSupplier supplier;
     private float volume = 1;
     private int instanceHandle = -1;
     private boolean running = false;
+    private boolean isPaused = false;
     private Object lock = new Object();
 
-    public static synchronized void createVolumeCategoryIfNotExist(String name)
+    public static synchronized void pauseAll()
+    {
+        pauseAll(Sound.MASTER_CATEGORY);
+    }
+
+    public static synchronized void pauseAll(String soundCategory)
+    {
+        soundCategories.get(soundCategory).pauseAll();
+    }
+
+    public static synchronized void resumeAll()
+    {
+        resumeAll(Sound.MASTER_CATEGORY);
+    }
+
+    public static synchronized void resumeAll(String soundCategory)
+    {
+        soundCategories.get(soundCategory).resumeAll();
+    }
+
+    public static synchronized void createSoundCategoryIfNotExist(String name)
     {
         name = name.toLowerCase();
-        var found = volumeCategories.get(name);
+        var found = soundCategories.get(name);
 
         if (found == null)
         {
-            VolumeCategory category = new VolumeCategory(name);
-            volumeCategories.put(name, category);
+            SoundCategory category = new SoundCategory(name);
+            soundCategories.put(name, category);
         }
     }
 
@@ -44,7 +64,7 @@ public class Sound implements LineStopListener
      */
     public static void setMasterVolume(float volume)
     {
-        setVolume(Sound.MASTER_VOLUME, volume);
+        setVolume(Sound.MASTER_CATEGORY, volume);
     }
 
     /**
@@ -58,8 +78,8 @@ public class Sound implements LineStopListener
     public static void setVolume(String categoryName, float volume)
     {
         categoryName= categoryName.toLowerCase();
-        createVolumeCategoryIfNotExist(categoryName);
-        var category = volumeCategories.get(categoryName);
+        createSoundCategoryIfNotExist(categoryName);
+        var category = soundCategories.get(categoryName);
         category.applyVolume(volume);
     }
 
@@ -92,12 +112,12 @@ public class Sound implements LineStopListener
 
         float actualVolume = volume;
 
-        if (this.supplier.getVolumeCategory() != null)
+        if (this.supplier.getSoundCategory() != null)
         {
-            actualVolume *= Sound.volumeCategories.get(this.supplier.getVolumeCategory()).getVolume();
+            actualVolume *= Sound.soundCategories.get(this.supplier.getSoundCategory()).getVolume();
         }
 
-        actualVolume *= Sound.volumeCategories.get(Sound.MASTER_VOLUME).getVolume();
+        actualVolume *= Sound.soundCategories.get(Sound.MASTER_CATEGORY).getVolume();
 
         if (this.instanceHandle != -1)
         {
@@ -124,6 +144,7 @@ public class Sound implements LineStopListener
      */
     private void setupClip()
     {
+        this.isPaused = false;
         stop();
 
         this.instanceHandle = this.supplier.getAudioCue().obtainInstance();
@@ -151,11 +172,7 @@ public class Sound implements LineStopListener
      */
     public void startAndWait()
     {
-        setupClip();
-
-        this.supplier.getAudioCue().addAudioCueListener(this);
-        this.supplier.getAudioCue().start(this.instanceHandle);
-        this.running = true;
+        start();
 
         synchronized (lock)
         {
@@ -215,6 +232,7 @@ public class Sound implements LineStopListener
     {
         if (this.instanceHandle != -1)
         {
+            this.isPaused = false;
             this.supplier.getAudioCue().stop(this.instanceHandle);
         }
     }
@@ -222,30 +240,50 @@ public class Sound implements LineStopListener
     /**
      * Fades the sound out over the given span of milliseconds.
      *
-     * @param fadeTime
+     * @param fadeTime time until completely faded in milliseconds.
      */
     public void fadeOut(long fadeTime)
     {
         fadeOut(fadeTime, false);
     }
 
+    /**
+     * Fades the sound out over the given span of milliseconds.
+     *
+     * This method blocks until the fading is complete.
+     *
+     * @param fadeTime time until completely faded in milliseconds.
+     */
     public void fadeOutAndWait(long fadeTime)
     {
         fadeOut(fadeTime, true);
     }
 
+    /**
+     * Fades the sound out over the given span of milliseconds.
+     *
+     * @param fadeTime time until completely faded in milliseconds.
+     * @param wait true if this method should block.
+     */
     private void fadeOut(long fadeTime, boolean wait)
     {
         Object lock = new Object();
         int fadeTicks = 10;
-        long fadeIntervall = fadeTime  / fadeTicks;
-        MutableInt count = new MutableInt(0);
+        long fadeIntervall = fadeTime / fadeTicks;
         float fadeOutVolume = this.volume / fadeTicks;
 
         Threads.get().executeCachedDaemon(() -> {
             for (int i = 0; i < fadeTicks; i++)
             {
-                setVolume(this.volume - fadeOutVolume);
+                if (!this.isPaused)
+                {
+                    setVolume(this.volume - fadeOutVolume);
+                }
+                else
+                {
+                    i--;
+                }
+
                 Exceptions.uncheck(Thread::sleep, fadeIntervall);
             }
 
@@ -269,21 +307,118 @@ public class Sound implements LineStopListener
         }
     }
 
+    /**
+     * Fades the sound in over the given span of milliseconds.
+     *
+     * @param fadeTime time until completely faded in milliseconds.
+     */
+    public void fadeIn(long fadeTime)
+    {
+        fadeIn(fadeTime, false);
+    }
+
+    /**
+     * Fades the sound in over the given span of milliseconds.
+     *
+     * This method blocks until the fading is complete.
+     *
+     * @param fadeTime time until completely faded in milliseconds.
+     */
+    public void fadeInAndWait(long fadeTime)
+    {
+        fadeIn(fadeTime, true);
+    }
+
+    /**
+     * Fades the sound in over the given span of milliseconds.
+     *
+     * @param fadeTime time until completely faded in milliseconds.
+     * @param wait true if this method should block.
+     */
+    private void fadeIn(long fadeTime, boolean wait)
+    {
+        Object lock = new Object();
+        int fadeTicks = 10;
+        long fadeIntervall = fadeTime / fadeTicks;
+        float endVolume = this.volume;
+        float fadeInVolume = this.volume / fadeTicks;
+        setVolume(0);
+
+        Threads.get().executeCachedDaemon(() -> {
+            float currentVolume = 0f;
+
+            for (int i = 0; i < fadeTicks; i++)
+            {
+                if (!this.isPaused)
+                {
+                    currentVolume += fadeInVolume;
+                    setVolume(currentVolume);
+                }
+                else
+                {
+                    i--;
+                }
+
+                Exceptions.uncheck(Thread::sleep, fadeIntervall);
+            }
+
+            setVolume(endVolume);
+
+            if (wait)
+            {
+                synchronized (lock)
+                {
+                    lock.notifyAll();
+                }
+            }
+        });
+
+        if (wait)
+        {
+            synchronized (lock)
+            {
+                Exceptions.uncheck(() -> lock.wait());
+            }
+        }
+    }
+
+    public void pause()
+    {
+        this.isPaused = true;
+
+        if (this.running)
+        {
+            this.supplier.getAudioCue().stop(this.instanceHandle);
+            this.running = false;
+        }
+    }
+
+    public void resume()
+    {
+        this.isPaused = false;
+
+        if (!this.running)
+        {
+            this.supplier.getAudioCue().start(this.instanceHandle);
+            this.running = true;
+        }
+    }
+
     @Override
     public void onStop(int instanceHandle)
     {
-        if (this.instanceHandle == instanceHandle)
+        if (this.instanceHandle == instanceHandle && !this.isPaused)
         {
             synchronized (this.lock)
             {
                 this.lock.notifyAll();
             }
 
-            Sound.volumeCategories.get(Sound.MASTER_VOLUME).removeSound(this);
+            Sound.soundCategories.get(Sound.MASTER_CATEGORY).removeSound(this);
 
-            if (this.supplier.getVolumeCategory() != null)
+            if (this.supplier.getSoundCategory() != null)
             {
-                Sound.volumeCategories.get(this.supplier.getVolumeCategory()).removeSound(this);
+                Sound.soundCategories.get(this.supplier.getSoundCategory()).removeSound(this);
             }
 
             this.supplier.getAudioCue().releaseInstance(this.instanceHandle);

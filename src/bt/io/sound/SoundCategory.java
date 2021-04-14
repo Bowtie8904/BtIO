@@ -5,13 +5,13 @@ import bt.utils.NumberUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VolumeCategory
+public class SoundCategory
 {
     private String name;
     private float volume;
     private List<Sound> sounds;
 
-    public VolumeCategory(String name)
+    public SoundCategory(String name)
     {
         this.name = name;
         this.volume = 1;
@@ -33,7 +33,7 @@ public class VolumeCategory
         return name;
     }
 
-    public void applyVolume(float volume)
+    public synchronized void applyVolume(float volume)
     {
         this.volume = NumberUtils.clamp(volume, 0, 1);
 
@@ -52,5 +52,21 @@ public class VolumeCategory
     public List<Sound> getSounds()
     {
         return sounds;
+    }
+
+    public synchronized void pauseAll()
+    {
+        for (var sound : this.sounds)
+        {
+            sound.pause();
+        }
+    }
+
+    public synchronized void resumeAll()
+    {
+        for (var sound : this.sounds)
+        {
+            sound.resume();
+        }
     }
 }

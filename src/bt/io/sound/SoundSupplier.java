@@ -11,12 +11,14 @@ import java.net.URL;
 import javax.sound.sampled.*;
 
 /**
+ * A class which holds sound data and supplies Sound instances on demand.
+ *
  * @author &#8904
  */
 public class SoundSupplier implements Killable
 {
     private float volume = 1;
-    private String volumeCategory;
+    private String soundCategory;
     private AudioCue audioCue;
 
     /**
@@ -42,7 +44,7 @@ public class SoundSupplier implements Killable
      */
     public SoundSupplier(URL url, int concurrentPlays) throws IOException, UnsupportedAudioFileException, LineUnavailableException
     {
-        Sound.createVolumeCategoryIfNotExist(Sound.MASTER_VOLUME);
+        Sound.createSoundCategoryIfNotExist(Sound.MASTER_CATEGORY);
         this.audioCue = AudioCue.makeStereoCue(url, concurrentPlays);
         this.audioCue.open();
     }
@@ -72,7 +74,7 @@ public class SoundSupplier implements Killable
      */
     public SoundSupplier(AudioInputStream ais, String name, int concurrentPlays) throws IOException, UnsupportedAudioFileException, LineUnavailableException
     {
-        Sound.createVolumeCategoryIfNotExist(Sound.MASTER_VOLUME);
+        Sound.createSoundCategoryIfNotExist(Sound.MASTER_CATEGORY);
         this.audioCue = AudioCue.makeStereoCue(ais, StringID.uniqueID(), concurrentPlays);
         this.audioCue.open();
     }
@@ -100,15 +102,15 @@ public class SoundSupplier implements Killable
      *
      * @param volumeCategory
      */
-    public void setVolumeCategory(String volumeCategory)
+    public void setSoundCategory(String soundCategory)
     {
-        this.volumeCategory = volumeCategory.toLowerCase();
-        Sound.createVolumeCategoryIfNotExist(this.volumeCategory);
+        this.soundCategory = soundCategory.toLowerCase();
+        Sound.createSoundCategoryIfNotExist(this.soundCategory);
     }
 
-    public String getVolumeCategory()
+    public String getSoundCategory()
     {
-        return this.volumeCategory;
+        return this.soundCategory;
     }
 
     /**
@@ -130,12 +132,12 @@ public class SoundSupplier implements Killable
     {
         Sound sound = new Sound(this);
         sound.setVolume(this.volume);
-        Sound.volumeCategories.get(Sound.MASTER_VOLUME).addSound(sound);
+        Sound.soundCategories.get(Sound.MASTER_CATEGORY).addSound(sound);
 
 
-        if (this.volumeCategory != null)
+        if (this.soundCategory != null)
         {
-            Sound.volumeCategories.get(this.volumeCategory).addSound(sound);
+            Sound.soundCategories.get(this.soundCategory).addSound(sound);
         }
 
         return sound;
