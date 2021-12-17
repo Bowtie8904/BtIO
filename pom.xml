@@ -17,18 +17,6 @@
 					<verbose>true</verbose>
 				</configuration>
 			</plugin>
-			<plugin>  <!-- Create sources.jar -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 	<repositories>
@@ -38,10 +26,10 @@
 		</repository>
 	</repositories>
 	<dependencies>
-	<dependency>
+		<dependency>
             <groupId>com.github.Bowtie8904</groupId>
             <artifactId>BtCommons</artifactId>
-            <version>985aa21</version>
+            <version>9d8566dc</version>
         </dependency>
 		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
 		<dependency>

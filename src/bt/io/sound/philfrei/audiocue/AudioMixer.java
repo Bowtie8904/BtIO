@@ -37,6 +37,8 @@ package bt.io.sound.philfrei.audiocue;
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import bt.log.Log;
+
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -248,7 +250,7 @@ public class AudioMixer
                 }
                 catch (Exception e)
                 {
-                    e.printStackTrace();
+                    Log.error("Failed to read track", e);
                 }
             }
             for (int i = 0; i < readBufferSize; i++)

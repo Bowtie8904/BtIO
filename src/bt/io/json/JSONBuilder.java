@@ -1,5 +1,6 @@
 package bt.io.json;
 
+import bt.log.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,7 +65,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -85,7 +86,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -106,7 +107,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -127,7 +128,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -148,7 +149,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -169,7 +170,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -190,7 +191,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -211,7 +212,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -250,7 +251,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -278,7 +279,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -306,7 +307,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -334,7 +335,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -362,7 +363,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -386,7 +387,7 @@ public class JSONBuilder
             }
             catch (JSONException e)
             {
-                e.printStackTrace();
+                Log.error("Failed to add element", e);
             }
         }
 
@@ -397,7 +398,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -421,7 +422,7 @@ public class JSONBuilder
             }
             catch (JSONException e)
             {
-                e.printStackTrace();
+                Log.error("Failed to add element", e);
             }
         }
 
@@ -432,7 +433,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }
@@ -460,7 +461,7 @@ public class JSONBuilder
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to add element", e);
         }
         return this;
     }

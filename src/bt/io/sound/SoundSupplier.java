@@ -1,6 +1,7 @@
 package bt.io.sound;
 
 import bt.io.sound.philfrei.audiocue.AudioCue;
+import bt.log.Log;
 import bt.types.Killable;
 import bt.utils.StringID;
 
@@ -146,6 +147,7 @@ public class SoundSupplier implements Killable
     @Override
     public void kill()
     {
+        Log.info("Closing sound '{}'", this.audioCue.getName());
         this.audioCue.close();
     }
 }

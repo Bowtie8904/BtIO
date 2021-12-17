@@ -8,6 +8,7 @@ import java.util.Map;
 import bt.io.text.intf.TextLoader;
 import bt.io.text.obj.Text;
 import bt.io.text.obj.TextSource;
+import bt.log.Log;
 import bt.utils.Null;
 
 /**
@@ -52,6 +53,8 @@ public class BaseTextLoader implements TextLoader
     @Override
     public Text get(String key)
     {
+        Log.entry(key);
+
         var textsForLanguage = this.texts.get(this.language);
 
         Text text = null;
@@ -67,6 +70,8 @@ public class BaseTextLoader implements TextLoader
             add(text);
         }
 
+        Log.exit(text);
+
         return text;
     }
 
@@ -76,6 +81,8 @@ public class BaseTextLoader implements TextLoader
     @Override
     public void add(Text text)
     {
+        Log.entry(text);
+
         var textsForLanguage = this.texts.get(text.getLanguage());
 
         if (textsForLanguage == null)
@@ -85,6 +92,8 @@ public class BaseTextLoader implements TextLoader
         }
 
         this.texts.get(text.getLanguage()).put(text.getKey(), text);
+
+        Log.exit();
     }
 
     /**
@@ -93,7 +102,11 @@ public class BaseTextLoader implements TextLoader
     @Override
     public void register(TextSource textSource)
     {
+        Log.entry(textSource);
+
         this.textSources.add(textSource);
+
+        Log.exit();
     }
 
     /**
@@ -102,6 +115,8 @@ public class BaseTextLoader implements TextLoader
     @Override
     public void load(String group)
     {
+        Log.entry(group);
+
         List<String> loadedClasses = new ArrayList<>();
 
         for (TextSource textSource : this.textSources)
@@ -138,11 +153,13 @@ public class BaseTextLoader implements TextLoader
                 }
             }
 
-            System.out.printf("[%s] Loaded %d texts for %s.",
-                              group,
-                              count,
-                              textSource.getClass().getName());
+            Log.info("[{}] Loaded {} texts for {}.",
+                     group,
+                     count,
+                     textSource.getClass().getName());
         }
+
+        Log.exit();
     }
 
     /**
@@ -151,7 +168,7 @@ public class BaseTextLoader implements TextLoader
     @Override
     public void kill()
     {
-        System.out.println("Clearing texts.");
+        Log.info("Clearing texts.");
         this.textSources.clear();
         this.texts.clear();
     }

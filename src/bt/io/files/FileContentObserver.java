@@ -16,6 +16,7 @@ import bt.io.files.evnt.FileCreateEvent;
 import bt.io.files.evnt.FileDeleteEvent;
 import bt.io.files.evnt.FileModifyEvent;
 import bt.io.files.evnt.FileObserverEvent;
+import bt.log.Log;
 import bt.runtime.InstanceKiller;
 import bt.types.Killable;
 import bt.utils.Null;
@@ -197,6 +198,8 @@ public class FileContentObserver extends FileObserver
     @Override
     protected void setFile(WatchKey key, File file)
     {
+        Log.entry(key, file);
+
         super.setFile(key, file);
 
         if (file.isDirectory())
@@ -212,15 +215,18 @@ public class FileContentObserver extends FileObserver
         {
             addFile(file);
         }
+
+        Log.exit();
     }
 
     private void addFile(File file)
     {
+        Log.entry(file);
+
         long length = 0;
         try
         {
             length = Files.readString(file.toPath()).length();
-
         }
         catch (IOException e)
         {
@@ -231,17 +237,21 @@ public class FileContentObserver extends FileObserver
             }
             catch (IOException e1)
             {
-                e.printStackTrace();
+                Log.error("Failed to get length of file", e1);
             }
         }
 
         this.fileSizes = Null.nullValue(this.fileSizes, new HashMap<File, Long>());
         this.fileSizes.put(file, length);
+
+        Log.exit();
     }
 
     @Override
     protected void dispatchEvent(FileObserverEvent e)
     {
+        Log.entry(e);
+
         super.dispatchEvent(e);
 
         File file = e.fullContext().toFile();
@@ -272,8 +282,8 @@ public class FileContentObserver extends FileObserver
                 }
                 catch (IOException e2)
                 {
-                    e1.printStackTrace();
-                    e2.printStackTrace();
+                    Log.error("Failed to get length of non-text based file", e1);
+                    Log.error("Failed to get length of file", e2);
                 }
             }
 
@@ -295,5 +305,7 @@ public class FileContentObserver extends FileObserver
                 this.eventDispatcher.dispatch(event);
             }
         }
+
+        Log.exit();
     }
 }

@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import bt.log.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +42,7 @@ public final class JSON
         }
         catch (JSONException e)
         {
-            e.printStackTrace();
+            Log.error("Failed to create JSOn object", e);
         }
 
         return object;
@@ -100,7 +101,7 @@ public final class JSON
         }
         catch (IOException e1)
         {
-            e1.printStackTrace();
+            Log.error("Failed to close input stream", e1);
         }
 
         object = buildObject(tokener);

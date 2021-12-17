@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
+import bt.log.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -55,7 +56,7 @@ public class JsonTextLoader extends BaseTextLoader
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Log.error("Failed to read file", e);
         }
 
         return JSON.parse(jsonString);
@@ -107,6 +108,8 @@ public class JsonTextLoader extends BaseTextLoader
     @Override
     public void load(String group)
     {
+        Log.entry(group);
+
         super.load(group);
         JSONObject jsonFile = getJsonForName(group);
 
@@ -203,8 +206,10 @@ public class JsonTextLoader extends BaseTextLoader
             }
         }
 
-        System.out.printf("[%s] Loaded %d texts from language file.",
+        Log.info("[{}] Loaded {} texts from language file.",
                           group,
                           count);
+
+        Log.exit();
     }
 }

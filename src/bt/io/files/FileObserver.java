@@ -21,6 +21,7 @@ import bt.io.files.evnt.FileCreateEvent;
 import bt.io.files.evnt.FileDeleteEvent;
 import bt.io.files.evnt.FileModifyEvent;
 import bt.io.files.evnt.FileObserverEvent;
+import bt.log.Log;
 import bt.runtime.InstanceKiller;
 import bt.runtime.evnt.Dispatcher;
 import bt.scheduler.Threads;
@@ -69,7 +70,7 @@ public class FileObserver implements Killable
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            Log.error("failed to create new watch service", e);
         }
 
         this.eventDispatcher = new Dispatcher();
@@ -196,11 +197,15 @@ public class FileObserver implements Killable
 
     protected void setFile(WatchKey key, File file)
     {
+        Log.entry(key, file);
+
         if (!file.isDirectory())
         {
             this.observedFiles = Null.nullValue(this.observedFiles, new HashMap<WatchKey, File>());
             this.observedFiles.put(key, file);
         }
+
+        Log.exit();
     }
 
     /**
@@ -226,6 +231,8 @@ public class FileObserver implements Killable
      */
     public WatchKey register(Path path, String... regex) throws IOException
     {
+        Log.entry(path, regex);
+
         // cant register if watchservice creation failed
         if (this.watchService == null)
         {
@@ -264,6 +271,8 @@ public class FileObserver implements Killable
                                         .toArray(Pattern[]::new));
         }
 
+        Log.exit(key);
+
         return key;
     }
 
@@ -290,7 +299,13 @@ public class FileObserver implements Killable
      */
     public WatchKey register(File file, String... regex) throws IOException
     {
-        return register(Path.of(file.getAbsolutePath()), regex);
+        Log.entry(file, regex);
+
+        WatchKey key = register(Path.of(file.getAbsolutePath()), regex);
+
+        Log.exit(key);
+
+        return key;
     }
 
     /**
@@ -316,7 +331,13 @@ public class FileObserver implements Killable
      */
     public WatchKey register(String filePath, String... regex) throws IOException
     {
-        return register(Path.of(filePath), regex);
+        Log.entry(filePath, regex);
+
+        WatchKey key = register(Path.of(filePath), regex);
+
+        Log.exit(key);
+
+        return key;
     }
 
     /**
@@ -328,6 +349,8 @@ public class FileObserver implements Killable
      */
     public void observeBlocking()
     {
+        Log.entry();
+
         this.observe = true;
 
         while (this.observe)
@@ -413,6 +436,8 @@ public class FileObserver implements Killable
                 this.observe = false;
             }
         }
+
+        Log.exit();
     }
 
     private File resolveFile(WatchEvent e, Path observedPath)
@@ -429,7 +454,11 @@ public class FileObserver implements Killable
      */
     public void observeNonBlocking()
     {
+        Log.entry();
+
         Threads.get().execute(this::observeBlocking);
+
+        Log.exit();
     }
 
     /**
@@ -442,7 +471,7 @@ public class FileObserver implements Killable
     @Override
     public void kill()
     {
-        System.out.println("Killing FileObserver.");
+        Log.info("Killing FileObserver.");
         this.observe = false;
         Exceptions.logThrow(() -> Null.checkClose(this.watchService));
     }
@@ -499,6 +528,10 @@ public class FileObserver implements Killable
      */
     protected void dispatchEvent(FileObserverEvent e)
     {
+        Log.entry(e);
+
         this.eventDispatcher.dispatch(e);
+
+        Log.exit();
     }
 }
