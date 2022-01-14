@@ -61,7 +61,7 @@ public class BaseTextLoader implements TextLoader
 
         if (textsForLanguage != null)
         {
-            text = textsForLanguage.get(key.toUpperCase());
+            text = textsForLanguage.get(key.toLowerCase());
         }
 
         if (text == null)
@@ -91,7 +91,7 @@ public class BaseTextLoader implements TextLoader
             this.texts.put(text.getLanguage(), textsForLanguage);
         }
 
-        this.texts.get(text.getLanguage()).put(text.getKey(), text);
+        this.texts.get(text.getLanguage()).put(text.getKey().toLowerCase(), text);
 
         Log.exit();
     }

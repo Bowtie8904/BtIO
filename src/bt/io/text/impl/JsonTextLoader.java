@@ -137,7 +137,7 @@ public class JsonTextLoader extends BaseTextLoader
 
             if (jsonTextObj.has("key"))
             {
-                String key = jsonTextObj.getString("key");
+                String key = jsonTextObj.getString("key").toLowerCase();
 
                 if (this.loadMode == TextLoader.LAZY_LOADING)
                 {
