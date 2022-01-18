@@ -65,6 +65,20 @@ public interface TextLoader extends Killable
     public Text get(String key);
 
     /**
+     * Gets the version of the text with the given key for the currently set language.
+     *
+     * The parameters will be inserted in order into {} placeholders.
+     *
+     * <p>
+     * If no text could be found a new text will be created consisting of '* key *'.
+     * </p>
+     *
+     * @param key
+     * @return
+     */
+    public Text get(String key, Object... parameters);
+
+    /**
      * Adds the given text to the loader. The text must be fully configured with id and language.
      *
      * @param text

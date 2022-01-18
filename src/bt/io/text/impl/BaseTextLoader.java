@@ -48,7 +48,7 @@ public class BaseTextLoader implements TextLoader
     }
 
     /**
-     * @see bt.game.resource.load.intf.TextLoader#get(int)
+     * @see bt.game.resource.load.intf.TextLoader#get(String)
      */
     @Override
     public Text get(String key)
@@ -71,6 +71,27 @@ public class BaseTextLoader implements TextLoader
         }
 
         Log.exit(text);
+
+        return text;
+    }
+
+    @Override
+    public Text get(String key, Object... parameters)
+    {
+        Log.entry(key, new Object[]{parameters});
+
+        Text text = get(key);
+        String currentText = text.getText();
+
+        if (parameters != null)
+        {
+            for (int i = 0; i < parameters.length; i++)
+            {
+                currentText = currentText.replaceFirst("\\{}", parameters[i] != null ? parameters[i].toString() : "null");
+            }
+        }
+
+        text = new Text(key, currentText, this.language);
 
         return text;
     }
