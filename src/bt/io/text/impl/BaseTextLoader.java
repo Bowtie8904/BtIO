@@ -1,19 +1,18 @@
 package bt.io.text.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import bt.io.text.intf.TextLoader;
 import bt.io.text.obj.Text;
 import bt.io.text.obj.TextSource;
 import bt.log.Log;
 import bt.utils.Null;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author &#8904
- *
  */
 public class BaseTextLoader implements TextLoader
 {
@@ -27,6 +26,17 @@ public class BaseTextLoader implements TextLoader
         this.texts = new HashMap<>();
         this.textSources = new ArrayList<>();
         this.loadMode = TextLoader.LAZY_LOADING;
+    }
+
+    @Override
+    public List<Text> getTexts()
+    {
+        List<Text> textList = new ArrayList<>();
+        Map<String, Text> textsForLanguage = this.texts.get(getLanguage());
+
+        textList.addAll(textsForLanguage.values());
+
+        return textList;
     }
 
     /**
@@ -78,7 +88,7 @@ public class BaseTextLoader implements TextLoader
     @Override
     public Text get(String key, Object... parameters)
     {
-        Log.entry(key, new Object[]{parameters});
+        Log.entry(key, new Object[] { parameters });
 
         Text text = get(key);
         String currentText = text.getText();
@@ -170,7 +180,7 @@ public class BaseTextLoader implements TextLoader
                 for (var text : loadedTexts)
                 {
                     add(text);
-                    count ++ ;
+                    count++;
                 }
             }
 
@@ -195,21 +205,21 @@ public class BaseTextLoader implements TextLoader
     }
 
     /**
-     * @see bt.game.resource.load.intf.TextLoader#setLoadMode(int)
-     */
-    @Override
-    public void setLoadMode(int mode)
-    {
-        this.loadMode = mode;
-    }
-
-    /**
      * @see bt.game.resource.load.intf.TextLoader#getLoadMode()
      */
     @Override
     public int getLoadMode()
     {
         return this.loadMode;
+    }
+
+    /**
+     * @see bt.game.resource.load.intf.TextLoader#setLoadMode(int)
+     */
+    @Override
+    public void setLoadMode(int mode)
+    {
+        this.loadMode = mode;
     }
 
     /**
