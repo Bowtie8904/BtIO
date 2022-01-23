@@ -34,7 +34,10 @@ public class BaseTextLoader implements TextLoader
         List<Text> textList = new ArrayList<>();
         Map<String, Text> textsForLanguage = this.texts.get(getLanguage());
 
-        textList.addAll(textsForLanguage.values());
+        if (textsForLanguage != null)
+        {
+            textList.addAll(textsForLanguage.values());
+        }
 
         return textList;
     }
