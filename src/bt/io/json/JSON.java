@@ -1,17 +1,13 @@
 package bt.io.json;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
 import bt.log.Log;
+import bt.utils.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import bt.utils.FileUtils;
+import java.io.*;
 
 /**
  * A utility class to perform JSON operations.
@@ -52,12 +48,12 @@ public final class JSON
      * Parses the given JSON String to a valid JSONObject.
      *
      * <p>
-     *     Should the given json start with an array instead of a normal json object, the array will be
-     *     wrapped in a json object with the key "array".
+     * Should the given json start with an array instead of a normal json object, the array will be
+     * wrapped in a json object with the key "array".
      * </p>
      *
-     * @param json
-     *            The json String to parse.
+     * @param json The json String to parse.
+     *
      * @return The parsed JSONObject or null if the String was null or incorrectly formatted.
      */
     public static JSONObject parse(String json)
@@ -77,12 +73,12 @@ public final class JSON
      * Parses the given JSON InpuitStream to a valid JSONObject.
      *
      * <p>
-     *     Should the given json start with an array instead of a normal json object, the array will be
-     *     wrapped in a json object with the key "array".
+     * Should the given json start with an array instead of a normal json object, the array will be
+     * wrapped in a json object with the key "array".
      * </p>
      *
-     * @param json
-     *            The json InputStream to parse.
+     * @param json The json InputStream to parse.
+     *
      * @return The parsed JSONObject or null if the InputStream was null or incorrectly formatted.
      */
     public static JSONObject parse(InputStream json)
@@ -112,14 +108,45 @@ public final class JSON
     /**
      * Parses the given JSON file to a valid JSONObject.
      *
-     * @param json
-     *            The json file to parse.
+     * @param json The json file to parse.
+     *
      * @return The parsed JSONObject or null if the file was null, does not exist or is incorrectly formatted.
+     *
      * @throws IOException
      * @throws FileNotFoundException
      */
     public static JSONObject parse(File json) throws FileNotFoundException, IOException
     {
         return parse(FileUtils.readFile(json));
+    }
+
+    /**
+     * Saves the JSON structure to the file at the given path.
+     *
+     * <p>
+     * The file is created if it does not exist.
+     * </p>
+     */
+    public static void save(JSONObject json, File file) throws IOException
+    {
+        file.getParentFile().mkdirs();
+        file.createNewFile();
+
+        try (FileWriter fileWriter = new FileWriter(file))
+        {
+            fileWriter.write(json.toString(4));
+        }
+    }
+
+    /**
+     * Saves the JSON structure to the file at the given path.
+     *
+     * <p>
+     * The file is created if it does not exist.
+     * </p>
+     */
+    public static void save(JSONObject json, String filePath) throws IOException
+    {
+        save(json, new File(filePath));
     }
 }
