@@ -142,10 +142,10 @@ public class JsonTextLoader extends BaseTextLoader
                 }
             }
 
-            Log.info("[{}] Loaded {} texts from language file {}.",
-                     group,
-                     textCount,
-                     file.getAbsolutePath());
+            Log.debug("[{}] Loaded {} texts from language file {}.",
+                      group,
+                      textCount,
+                      file.getAbsolutePath());
         }
 
         Log.exit();

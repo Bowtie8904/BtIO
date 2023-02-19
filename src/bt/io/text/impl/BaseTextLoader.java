@@ -187,10 +187,10 @@ public class BaseTextLoader implements TextLoader
                 }
             }
 
-            Log.info("[{}] Loaded {} texts for {}.",
-                     group,
-                     count,
-                     textSource.getClass().getName());
+            Log.debug("[{}] Loaded {} texts for {}.",
+                      group,
+                      count,
+                      textSource.getClass().getName());
         }
 
         Log.exit();
