@@ -40,6 +40,16 @@ public class JsonTextLoader extends BaseTextLoader
         return name.toLowerCase().matches(group.toLowerCase() + "_" + this.language.toLowerCase() + "\\.lang");
     }
 
+    protected boolean filenameMatchesLanguageFileEagerLoading(File dir, String name)
+    {
+        return name.toLowerCase().matches(".*_.{1,3}\\.lang");
+    }
+
+    protected boolean filenameMatchesLanguageFileLazyLoading(File dir, String name)
+    {
+        return name.toLowerCase().matches(".*_" + this.language.toLowerCase()+ "\\.lang");
+    }
+
     protected List<File> getGroupFiles(File directory, String group)
     {
         Log.entry(directory, group);
@@ -52,7 +62,9 @@ public class JsonTextLoader extends BaseTextLoader
             {
                 files.addAll(getGroupFiles(file, group));
             }
-            else if ((this.loadMode == TextLoader.EAGER_LOADING && filenameMatchesEagerLoading(directory, group, file.getName()))
+            else if ((group.equals("*") && this.loadMode == TextLoader.EAGER_LOADING && filenameMatchesLanguageFileEagerLoading(directory, file.getName()))
+                    || (group.equals("*") && this.loadMode == TextLoader.LAZY_LOADING && filenameMatchesLanguageFileLazyLoading(directory, file.getName()))
+                    || (this.loadMode == TextLoader.EAGER_LOADING && filenameMatchesEagerLoading(directory, group, file.getName()))
                     || (this.loadMode == TextLoader.LAZY_LOADING && filenameMatchesLazyLoading(directory, group, file.getName())))
             {
                 files.add(file);
@@ -78,7 +90,7 @@ public class JsonTextLoader extends BaseTextLoader
      * [
      * {
      * "key":"Buttons.Play",
-     * "text":"Play"
+     * "value":"Play"
      * }
      * ...
      * ]
@@ -125,9 +137,9 @@ public class JsonTextLoader extends BaseTextLoader
                 {
                     String key = jsonTextObj.getString("key").toLowerCase();
 
-                    if (jsonTextObj.has("text"))
+                    if (jsonTextObj.has("value"))
                     {
-                        text = jsonTextObj.getString("text");
+                        text = jsonTextObj.getString("value");
                     }
 
                     if (text == null)

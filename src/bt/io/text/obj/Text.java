@@ -9,20 +9,20 @@ import org.json.JSONObject;
  */
 public class Text implements Jsonable
 {
-    private String text;
+    private String value;
     private String language;
     private String key;
 
-    public Text(String key, String text)
+    public Text(String key, String value)
     {
         this.key = key.toUpperCase();
-        this.text = text;
+        this.value = value;
         this.language = "EN";
     }
 
-    public Text(String key, String text, String language)
+    public Text(String key, String value, String language)
     {
-        this(key, text);
+        this(key, value);
         setLanguage(language);
     }
 
@@ -52,30 +52,30 @@ public class Text implements Jsonable
         this.language = language.toUpperCase();
     }
 
-    public String getText()
+    public String getValue()
     {
-        return this.text;
+        return this.value;
     }
 
     /**
-     * @param text the text to set
+     * @param value the text to set
      */
-    public void setText(String text)
+    public void setValue(String value)
     {
-        this.text = text;
+        this.value = value;
     }
 
     @Override
     public String toString()
     {
-        return getText();
+        return getValue();
     }
 
     @Override
     public JSONObject toJSON()
     {
         return new JSONBuilder().put("key", this.key)
-                                .put("text", this.text)
+                                .put("value", this.value)
                                 .toJSON();
     }
 }

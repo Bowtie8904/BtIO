@@ -68,7 +68,7 @@ public interface TextLoader extends Killable
      *
      * @return
      */
-    public Text get(String key);
+    public Text getText(String key);
 
     /**
      * Gets the version of the text with the given key for the currently set language.
@@ -83,7 +83,91 @@ public interface TextLoader extends Killable
      *
      * @return
      */
-    public Text get(String key, Object... parameters);
+    public Text getText(String key, Object... parameters);
+
+    /**
+     * Gets the version of the text with the given key for the currently set language.
+     *
+     * <p>
+     * If no text could be found a new text will be created consisting of '* key *'.
+     * </p>
+     *
+     * @param key
+     *
+     * @return
+     */
+    public Text getTextForLanguage(String key, String language);
+
+    /**
+     * Gets the version of the text with the given key for the currently set language.
+     * <p>
+     * The parameters will be inserted in order into {} placeholders.
+     *
+     * <p>
+     * If no text could be found a new text will be created consisting of '* key *'.
+     * </p>
+     *
+     * @param key
+     *
+     * @return
+     */
+    public Text getTextForLanguage(String key, String language, Object... parameters);
+
+    /**
+     * Gets the version of the text with the given key for the currently set language.
+     *
+     * <p>
+     * If no text could be found a new text will be created consisting of '* key *'.
+     * </p>
+     *
+     * @param key
+     *
+     * @return
+     */
+    public String translate(String key);
+
+    /**
+     * Gets the version of the text with the given key for the currently set language.
+     * <p>
+     * The parameters will be inserted in order into {} placeholders.
+     *
+     * <p>
+     * If no text could be found a new text will be created consisting of '* key *'.
+     * </p>
+     *
+     * @param key
+     *
+     * @return
+     */
+    public String translate(String key, Object... parameters);
+
+    /**
+     * Gets the version of the text with the given key for the currently set language.
+     *
+     * <p>
+     * If no text could be found a new text will be created consisting of '* key *'.
+     * </p>
+     *
+     * @param key
+     *
+     * @return
+     */
+    public String translateToLanguage(String key, String language);
+
+    /**
+     * Gets the version of the text with the given key for the currently set language.
+     * <p>
+     * The parameters will be inserted in order into {} placeholders.
+     *
+     * <p>
+     * If no text could be found a new text will be created consisting of '* key *'.
+     * </p>
+     *
+     * @param key
+     *
+     * @return
+     */
+    public String translateToLanguage(String key, String language, Object... parameters);
 
     /**
      * Adds the given text to the loader. The text must be fully configured with id and language.

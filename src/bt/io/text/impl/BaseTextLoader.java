@@ -64,11 +64,23 @@ public class BaseTextLoader implements TextLoader
      * @see bt.game.resource.load.intf.TextLoader#get(String)
      */
     @Override
-    public Text get(String key)
+    public Text getText(String key)
+    {
+        return getTextForLanguage(key, this.language);
+    }
+
+    @Override
+    public Text getText(String key, Object... parameters)
+    {
+        return getTextForLanguage(key, this.language, parameters);
+    }
+
+    @Override
+    public Text getTextForLanguage(String key, String language)
     {
         Log.entry(key);
 
-        var textsForLanguage = this.texts.get(this.language);
+        var textsForLanguage = this.texts.get(language);
 
         Text text = null;
 
@@ -89,12 +101,12 @@ public class BaseTextLoader implements TextLoader
     }
 
     @Override
-    public Text get(String key, Object... parameters)
+    public Text getTextForLanguage(String key, String language, Object... parameters)
     {
         Log.entry(key, new Object[] { parameters });
 
-        Text text = get(key);
-        String currentText = text.getText();
+        Text text = getText(key, language);
+        String currentText = text.getValue();
 
         if (parameters != null)
         {
@@ -107,6 +119,30 @@ public class BaseTextLoader implements TextLoader
         text = new Text(key, currentText, this.language);
 
         return text;
+    }
+
+    @Override
+    public String translate(String key)
+    {
+        return getText(key).getValue();
+    }
+
+    @Override
+    public String translate(String key, Object... parameters)
+    {
+        return getText(key, parameters).getValue();
+    }
+
+    @Override
+    public String translateToLanguage(String key, String language)
+    {
+        return getText(key, language).getValue();
+    }
+
+    @Override
+    public String translateToLanguage(String key, String language, Object... parameters)
+    {
+        return getText(key, language, parameters).getValue();
     }
 
     /**
