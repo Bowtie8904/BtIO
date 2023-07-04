@@ -105,7 +105,7 @@ public class BaseTextLoader implements TextLoader
     {
         Log.entry(key, new Object[] { parameters });
 
-        Text text = getText(key, language);
+        Text text = getTextForLanguage(key, language);
         String currentText = text.getValue();
 
         if (parameters != null)
@@ -136,13 +136,13 @@ public class BaseTextLoader implements TextLoader
     @Override
     public String translateToLanguage(String key, String language)
     {
-        return getText(key, language).getValue();
+        return getTextForLanguage(key, language).getValue();
     }
 
     @Override
     public String translateToLanguage(String key, String language, Object... parameters)
     {
-        return getText(key, language, parameters).getValue();
+        return getTextForLanguage(key, language, parameters).getValue();
     }
 
     /**
