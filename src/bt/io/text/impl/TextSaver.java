@@ -13,18 +13,7 @@ import java.util.List;
  * @author Lukas Hartwig
  * @since 10.07.2022
  */
-public class TextSaver
+public interface TextSaver
 {
-    public void save(File file, String language, List<Text> texts) throws IOException
-    {
-        JSONBuilder builder = new JSONBuilder();
-
-        builder.put("texts", texts.toArray());
-        builder.put("language", language);
-
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
-        writer.write(builder.toJSON().toString(2));
-
-        writer.close();
-    }
+    void save(File file, String language, List<Text> texts) throws IOException;
 }

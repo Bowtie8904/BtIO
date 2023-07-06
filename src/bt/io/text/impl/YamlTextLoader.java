@@ -74,22 +74,7 @@ public class YamlTextLoader extends FileTextLoader
         {
             var value = textMap.get(key);
 
-            if (value instanceof String)
-            {
-                String finalKey = textKey;
-
-                if (!finalKey.isEmpty())
-                {
-                    finalKey += ".";
-                }
-
-                finalKey += key;
-
-                textObj = new Text(finalKey, (String)value);
-                textObj.setLanguage(language == null ? "EN" : language);
-                add(textObj);
-            }
-            else if (value instanceof Map)
+            if (value instanceof Map)
             {
                 String finalKey = textKey;
 
@@ -101,6 +86,21 @@ public class YamlTextLoader extends FileTextLoader
                 finalKey += key;
 
                 parseTexts((Map<String, Object>)value, finalKey, language);
+            }
+            else
+            {
+                String finalKey = textKey;
+
+                if (!finalKey.isEmpty())
+                {
+                    finalKey += ".";
+                }
+
+                finalKey += key;
+
+                textObj = new Text(finalKey, value == null ? "" : value.toString());
+                textObj.setLanguage(language == null ? "EN" : language);
+                add(textObj);
             }
         }
     }
