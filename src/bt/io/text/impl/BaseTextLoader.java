@@ -1,5 +1,6 @@
 package bt.io.text.impl;
 
+import bt.io.text.exc.TextLoadException;
 import bt.io.text.intf.TextLoader;
 import bt.io.text.obj.Text;
 import bt.io.text.obj.TextSource;
@@ -161,7 +162,14 @@ public class BaseTextLoader implements TextLoader
             this.texts.put(text.getLanguage(), textsForLanguage);
         }
 
-        this.texts.get(text.getLanguage()).put(text.getKey().toLowerCase(), text);
+        String key = text.getKey().toLowerCase();
+
+        if (textsForLanguage.containsKey(key))
+        {
+            throw new TextLoadException("Text with key '" + key + "' already exists.");
+        }
+
+        textsForLanguage.put(key, text);
 
         Log.exit();
     }
