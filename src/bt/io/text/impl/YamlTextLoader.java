@@ -55,7 +55,7 @@ public class YamlTextLoader extends FileTextLoader
             String language = (String)yamlData.get("language");
             Map<String, Object> textMap = (Map<String, Object>)yamlData.get("texts");
 
-            parseTexts(textMap, "");
+            parseTexts(textMap, "", language);
 
             Log.debug("[{}] Loaded {} texts from language file {}.",
                       group,
@@ -66,7 +66,7 @@ public class YamlTextLoader extends FileTextLoader
         Log.exit();
     }
 
-    private void parseTexts(Map<String, Object> textMap, String textKey)
+    private void parseTexts(Map<String, Object> textMap, String textKey, String language)
     {
         Text textObj = null;
 
@@ -86,7 +86,7 @@ public class YamlTextLoader extends FileTextLoader
                 finalKey += key;
 
                 textObj = new Text(finalKey, (String)value);
-                textObj.setLanguage(this.language == null ? "EN" : this.language);
+                textObj.setLanguage(language == null ? "EN" : language);
                 add(textObj);
             }
             else if (value instanceof Map)
@@ -100,7 +100,7 @@ public class YamlTextLoader extends FileTextLoader
 
                 finalKey += key;
 
-                parseTexts((Map<String, Object>)value, finalKey);
+                parseTexts((Map<String, Object>)value, finalKey, language);
             }
         }
     }
