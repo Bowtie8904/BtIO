@@ -68,7 +68,7 @@ public class Text implements Jsonable
     @Override
     public String toString()
     {
-        return getValue();
+        return "{key=" + this.key + ", value=" + this.value + "}";
     }
 
     @Override

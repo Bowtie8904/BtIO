@@ -1,0 +1,15 @@
+language: "en"
+texts:
+  title: "Title"
+  button:
+    save: "Save"
+    cancel: "Cancel"
+  textfield:
+    placeholder:
+        name: "Name"
+        email: "Email"
+        password: "Password"
+        password_confirmation: "Password confirmation"
+        texts:
+          one: "One"
+          two: "Two"

@@ -2,7 +2,6 @@ package bt.io.text.impl;
 
 import bt.io.json.JSON;
 import bt.io.text.exc.TextLoadException;
-import bt.io.text.intf.TextLoader;
 import bt.io.text.obj.Text;
 import bt.log.Log;
 import org.json.JSONArray;
@@ -10,70 +9,23 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author &#8904
  */
-public class JsonTextLoader extends BaseTextLoader
+public class JsonTextLoader extends FileTextLoader
 {
     protected File baseFolder;
 
     public JsonTextLoader(File baseDir)
     {
+        super("json");
         this.baseFolder = baseDir;
     }
 
     public JsonTextLoader(String basePath)
     {
         this(new File(basePath));
-    }
-
-    protected boolean filenameMatchesEagerLoading(File dir, String group, String name)
-    {
-        return name.toLowerCase().matches(group.toLowerCase() + "_.{1,3}\\.lang");
-    }
-
-    protected boolean filenameMatchesLazyLoading(File dir, String group, String name)
-    {
-        return name.toLowerCase().matches(group.toLowerCase() + "_" + this.language.toLowerCase() + "\\.lang");
-    }
-
-    protected boolean filenameMatchesLanguageFileEagerLoading(File dir, String name)
-    {
-        return name.toLowerCase().matches(".*_.{1,3}\\.lang");
-    }
-
-    protected boolean filenameMatchesLanguageFileLazyLoading(File dir, String name)
-    {
-        return name.toLowerCase().matches(".*_" + this.language.toLowerCase()+ "\\.lang");
-    }
-
-    protected List<File> getGroupFiles(File directory, String group)
-    {
-        Log.entry(directory, group);
-
-        List<File> files = new ArrayList<>();
-
-        for (File file : directory.listFiles())
-        {
-            if (file.isDirectory())
-            {
-                files.addAll(getGroupFiles(file, group));
-            }
-            else if ((group.equals("*") && this.loadMode == TextLoader.EAGER_LOADING && filenameMatchesLanguageFileEagerLoading(directory, file.getName()))
-                    || (group.equals("*") && this.loadMode == TextLoader.LAZY_LOADING && filenameMatchesLanguageFileLazyLoading(directory, file.getName()))
-                    || (this.loadMode == TextLoader.EAGER_LOADING && filenameMatchesEagerLoading(directory, group, file.getName()))
-                    || (this.loadMode == TextLoader.LAZY_LOADING && filenameMatchesLazyLoading(directory, group, file.getName())))
-            {
-                files.add(file);
-            }
-        }
-
-        Log.exit(files);
-
-        return files;
     }
 
     /**
