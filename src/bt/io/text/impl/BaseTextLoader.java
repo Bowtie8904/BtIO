@@ -93,7 +93,6 @@ public class BaseTextLoader implements TextLoader
         if (text == null)
         {
             text = new Text(key, "* " + key + " *", this.language);
-            add(text);
         }
 
         Log.exit(text);
