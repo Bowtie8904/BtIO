@@ -177,6 +177,13 @@ public interface TextLoader extends Killable
     public void add(Text text);
 
     /**
+     * Updates the value of the given key if it exists.
+     *
+     * @param text
+     */
+    public void update(String key, String language, String value);
+
+    /**
      * Registers a TextSource that will be loaded during {@link #load(String)}.
      *
      * @param textSource

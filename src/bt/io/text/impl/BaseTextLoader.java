@@ -173,6 +173,33 @@ public class BaseTextLoader implements TextLoader
         Log.exit();
     }
 
+    @Override
+    public void update(String key, String language, String value)
+    {
+        Log.entry(key, language, value);
+
+        var textsForLanguage = this.texts.get(language.toUpperCase());
+
+        if (textsForLanguage == null)
+        {
+            textsForLanguage = new HashMap<>();
+            this.texts.put(language.toUpperCase(), textsForLanguage);
+        }
+
+        if (!textsForLanguage.containsKey(key.toLowerCase()))
+        {
+            Text text = new Text(key, value, language);
+            textsForLanguage.put(key, text);
+        }
+        else
+        {
+            Text text = textsForLanguage.get(key.toLowerCase());
+            text.setValue(value);
+        }
+
+        Log.exit();
+    }
+
     /**
      * @see bt.game.resource.load.intf.TextLoader#register(bt.game.resource.load.intf.Loadable)
      */
